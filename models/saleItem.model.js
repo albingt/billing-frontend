@@ -15,6 +15,18 @@ const SaleItem = sequelize.define("SaleItem", {
         type: DataTypes.UUID,
         allowNull: false,
     },
+    product_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    selling_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    },
+    cost_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    },
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false

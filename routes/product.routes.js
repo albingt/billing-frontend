@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { addProduct, deleteProduct, getProducts, productProfitReport, searchProducts, updateProduct } from "../controllers/product.controller.js";
+import { addProduct, deleteProduct, getProducts, searchProducts, updateProduct } from "../controllers/product.controller.js";
 import { isAdmin, verifyToken } from "../middleware/authHandler.js";
+import { productProfitReport } from "../controllers/bill.controller.js";
 
 const productRouter = Router();
 

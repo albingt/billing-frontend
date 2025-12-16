@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import sequelize from './config/db.js';
 import init_models from './models/index.js';
 import errorHandler from './middleware/errorHandler.js';
+import createadmin from './utils/createadmin.js';
 
 const app = express();
 
@@ -24,6 +25,8 @@ const startServer = async () => {
         await init_models();
         
         await sequelize.sync();
+
+        await createadmin();
 
         app.listen(config.port, () => {
             console.log(`server running on port: ${config.port}`);

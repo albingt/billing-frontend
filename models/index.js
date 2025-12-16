@@ -2,6 +2,7 @@ import User from "./user.model.js";
 import Product from "./product.model.js";
 import Sale from "./sale.model.js";
 import SaleItem from "./saleItem.model.js";
+import Voucher from "./voucher.model.js";
 
 const init_models = async () => {
 
@@ -13,16 +14,6 @@ const init_models = async () => {
 
     SaleItem.belongsTo(Sale, {
         foreignKey: "sale_id",
-    });
-
-    // PRODUCT ↔ SALEITEM
-    Product.hasMany(SaleItem, {
-        foreignKey: "product_id",
-        as: "saleItems"
-    });
-
-    SaleItem.belongsTo(Product, {
-        foreignKey: "product_id",
     });
 };
 

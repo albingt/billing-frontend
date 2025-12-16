@@ -1,6 +1,5 @@
-import { col, fn, literal, Op } from "sequelize";
+import { Op } from "sequelize";
 import Product from "../models/product.model.js";
-import SaleItem from "../models/saleItem.model.js";
 
 export const addProduct = async (req, res, next) => {
     try {
@@ -83,81 +82,6 @@ export const searchProducts = async (req, res, next) => {
         next(error)
     }
 }
-
-export const productProfitReport = async (req, res, next) => {
-    try {
-        const { page = 1, limit = 10, searchquery } = req.query;
-
-        const pageNumber = Number(page) || 1;
-        const limitNumber = Number(limit) || 10;
-        const offset = (pageNumber - 1) * limitNumber;
-
-        const where = {};
-
-        if (searchquery) {
-            where[Op.or] = [
-                { name: { [Op.like]: `%${searchquery}%` } },
-                { sku_code: { [Op.like]: `%${searchquery}%` } },
-            ];
-        }
-
-        const result = await Product.findAll({
-            where,
-            attributes: [
-                "id",
-                "name",
-                "sku_code",
-                "selling_price",
-                "cost_price",
-                [fn("SUM", col("saleItems.quantity")), "total_sold"],
-                [
-                    fn(
-                        "SUM",
-                        literal(`"saleItems"."quantity" * "Product"."selling_price"`)
-                    ),
-                    "total_revenue",
-                ],
-                [
-                    fn(
-                        "SUM",
-                        literal(`"saleItems"."quantity" * "Product"."cost_price"`)
-                    ),
-                    "total_cost",
-                ],
-                [
-                    literal(`
-                        SUM("saleItems"."quantity" * "Product"."selling_price") -
-                        SUM("saleItems"."quantity" * "Product"."cost_price")
-                    `),
-                    "profit",
-                ],
-            ],
-            include: [
-                {
-                    model: SaleItem,
-                    attributes: [],
-                    as: "saleItems",
-                    required: false,
-                },
-            ],
-            group: ["Product.id"],
-            subQuery: false,
-            limit: limitNumber,
-            offset,
-            raw: true,
-        });
-
-        res.status(200).json({
-            success: true,
-            total: result.length,
-            page: pageNumber,
-            limit: limitNumber,
-            data: result,
-        });
-    } catch (error) {
-        next(error);
-    }
-};
 
 export const updateProduct = async (req, res, next) => {
     try {
